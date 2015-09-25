@@ -9,6 +9,7 @@ lleg:
   - LLEG_JOINT3   : lleg-knee-p
   - LLEG_JOINT4   : lleg-ankle-p
   - LLEG_JOINT5   : lleg-ankle-r
+  - LLEG_JOINT6   : lleg-toe-p
 rleg:
   - RLEG_JOINT0   : rleg-crotch-y
   - RLEG_JOINT1   : rleg-crotch-r
@@ -16,21 +17,23 @@ rleg:
   - RLEG_JOINT3   : rleg-knee-p
   - RLEG_JOINT4   : rleg-ankle-p
   - RLEG_JOINT5   : rleg-ankle-r
+  - RLEG_JOINT6   : rleg-toe-p
 
 ##
 ## end-coords
 ##
 lleg-end-coords:
-  parent: LLEG_LINK5
-  translate : [0.0, 0, -0.110]
+  parent: LLEG_LINK6
+  translate : [0.0, 0, -0.025]
 rleg-end-coords:
-  parent: RLEG_LINK5
-  translate : [0.0, 0, -0.110]
+  parent: RLEG_LINK6
+  translate : [0.0, 0, -0.025]
 
 ##
 ## reset-pose
 ##
 angle-vector:
   reset-pose : [0.0, 0, -20, 40, -20, 0,
-                0.0, 0, -20, 40, -20, 0]
+                0.0, 0, -20, 40, -20, 0,
+                0, 0]
 

@@ -26,7 +26,7 @@
      (cons :controller-state "lleg_controller/state")
      (cons :action-type pr2_controllers_msgs::JointTrajectoryAction)
      (cons :joint-names (list "LLEG_JOINT0" "LLEG_JOINT1" "LLEG_JOINT2"
-                              "LLEG_JOINT3" "LLEG_JOINT4" "LLEG_JOINT5"))))
+                              "LLEG_JOINT3" "LLEG_JOINT4" "LLEG_JOINT5" "LLEG_JOINT6"))))
    )
   (:rleg-controller
    ()
@@ -37,7 +37,7 @@
      (cons :controller-state "rleg_controller/state")
      (cons :action-type pr2_controllers_msgs::JointTrajectoryAction)
      (cons :joint-names (list "RLEG_JOINT0" "RLEG_JOINT1" "RLEG_JOINT2"
-                              "RLEG_JOINT3" "RLEG_JOINT4" "RLEG_JOINT5"))))
+                              "RLEG_JOINT3" "RLEG_JOINT4" "RLEG_JOINT5" "RLEG_JOINT6"))))
    )
   )
 
