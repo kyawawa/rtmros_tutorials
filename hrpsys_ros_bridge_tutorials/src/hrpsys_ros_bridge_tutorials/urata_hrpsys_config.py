@@ -30,8 +30,8 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
             lleg_group = ['lleg', ['LLEG_JOINT0', 'LLEG_JOINT1', 'LLEG_JOINT2', 'LLEG_JOINT3', 'LLEG_JOINT4', 'LLEG_JOINT4_2', 'LLEG_JOINT5']]
             self.Groups = [rleg_group, lleg_group]
         elif self.ROBOT_NAME == "CHIDORI":
-            rleg_group = ['rleg', ['RLEG_JOINT0', 'RLEG_JOINT1', 'RLEG_JOINT2', 'RLEG_JOINT3', 'RLEG_JOINT4', 'RLEG_JOINT5']]
-            lleg_group = ['lleg', ['LLEG_JOINT0', 'LLEG_JOINT1', 'LLEG_JOINT2', 'LLEG_JOINT3', 'LLEG_JOINT4', 'LLEG_JOINT5']]
+            rleg_group = ['rleg', ['RLEG_JOINT0', 'RLEG_JOINT1', 'RLEG_JOINT2', 'RLEG_JOINT3', 'RLEG_JOINT4', 'RLEG_JOINT5', 'RLEG_JOINT6']]
+            lleg_group = ['lleg', ['LLEG_JOINT0', 'LLEG_JOINT1', 'LLEG_JOINT2', 'LLEG_JOINT3', 'LLEG_JOINT4', 'LLEG_JOINT5', 'LLEG_JOINT6']]
             self.Groups = [rleg_group, lleg_group]
         else:
             rarm_group = ['rarm', ['RARM_JOINT0', 'RARM_JOINT1', 'RARM_JOINT2', 'RARM_JOINT3', 'RARM_JOINT4', 'RARM_JOINT5', 'RARM_JOINT6', 'RARM_JOINT7']]
@@ -399,10 +399,10 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
         return [1.39626, 1.5708, 0.698132, 1.74533, -0.261799, 0.0, 0.0, -0.785398, -1.39626, -1.5708, 0.698132, -1.39626, 0.261799, 0.0, 0.0, -0.785398, 0.0, 0.0, -0.174533, 0.698132, -0.349066, 0.0, 0.0, 0.0, -0.174533, 0.698132, -0.349066, 0.0, 0.0, -0.087266, 0.872665, 0.0]
 
     def chidoriResetPose (self):
-        return [0.0,0.0,-0.349066,0.698132,-0.349066,0.0,0.0,0.0,-0.349066,0.698132,-0.349066,0.0]
+        return [0.0,0.0,-0.349066,0.698132,-0.349066,0.0,0.0,0.0,0.0,-0.349066,0.698132,-0.349066,0.0,0.0]
 
     def chidoriInitPose (self):
-        return [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        return [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
 
     def setResetPose(self):
         if self.ROBOT_NAME == "STARO":
