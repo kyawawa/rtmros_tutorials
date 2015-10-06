@@ -348,7 +348,7 @@ endif()
 compile_rbrain_model_for_closed_robots(CHIDORI CHIDORI CHIDORI
   --robothardware-conf-file-option "pdgains.file_name: ${PROJECT_SOURCE_DIR}/models/PDgains.sav"
   --conf-file-option "abc_leg_offset: 0.0, 0.1, 0.0"
-  --conf-file-option "end_effectors: rleg,RLEG_JOINT6,WAIST,0.0,0.0,-0.025,0.0,0.0,0.0,0.0, lleg,LLEG_JOINT6,WAIST,0.0,0.0,-0.025,0.0,0.0,0.0,0.0,"
+  --conf-file-option "end_effectors: rleg,RLEG_JOINT6,WAIST,-0.1255,0.0,-0.025,0.0,0.0,0.0,0.0, lleg,LLEG_JOINT6,WAIST,-0.1255,0.0,-0.025,0.0,0.0,0.0,0.0,"
   --conf-dt-option "0.002"
   --simulation-timestep-option "0.002"
   --conf-file-option "collision_loop: 20"

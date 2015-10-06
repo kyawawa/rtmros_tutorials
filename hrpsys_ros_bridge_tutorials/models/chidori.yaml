@@ -24,10 +24,10 @@ lleg:
 ##
 rleg-end-coords:
   parent: RLEG_LINK6
-  translate : [0.0, 0, -0.025]
+  translate : [-0.1255, 0, -0.025]
 lleg-end-coords:
   parent: LLEG_LINK6
-  translate : [0.0, 0, -0.025]
+  translate : [-0.1255, 0, -0.025]
 
 ##
 ## reset-pose
