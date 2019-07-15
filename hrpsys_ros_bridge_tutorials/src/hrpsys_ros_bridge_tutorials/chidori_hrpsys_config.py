@@ -20,6 +20,58 @@ class CHIDORIHrpsysConfigurator(URATAHrpsysConfigurator):
         return [0.0, 0.0, -0.698132, 1.39626, -0.698132, 0.0, # rleg
                 0.0, 0.0, -0.698132, 1.39626, -0.698132, 0.0] # lleg
 
+    def startAutoBalancer(self, limbs=None):
+        '''!@brief
+        Start AutoBalancer mode
+        @param limbs list of end-effector name to control.
+        If Groups has rarm and larm, rleg, lleg, rarm, larm by default.
+        If Groups is not defined or Groups does not have rarm and larm, rleg and lleg by default.
+        '''
+        if limbs==None:
+            if self.Groups != None and "rarm" in map (lambda x : x[0], self.Groups) and "larm" in map (lambda x : x[0], self.Groups):
+                limbs=["rleg", "lleg", "rarm", "larm"]
+            else:
+                limbs=["rleg", "lleg"]
+        self.abst_svc.startAutoBalancer(limbs)
+
+    def stopAutoBalancer(self):
+        '''!@brief
+        Stop AutoBalancer mode
+        '''
+        self.abst_svc.stopAutoBalancer()
+
+    def startStabilizer(self):
+        '''!@brief
+        Start Stabilzier mode
+        '''
+        self.abst_svc.startStabilizer()
+
+    def stopStabilizer(self):
+        '''!@brief
+        Stop Stabilzier mode
+        '''
+        self.abst_svc.stopStabilizer()
+
+
+    # Override parameter setter / getter for AutoBalancer and Stabilizer
+    def getABCParameters(self):
+        return self.abst_svc.getAutoBalancerParam()[1]
+
+    def getGaitGeneraterParameters(self):
+        return self.abst_svc.getGaitGeneratorParam()[1]
+
+    def getSTParameters(self):
+        return self.abst_svc.getStabilizerParam()
+
+    def setABCParameters(self, param):
+        return self.abst_svc.setAutoBalancerParam(param)
+
+    def setGaitGeneraterParameters(self, param):
+        return self.abst_svc.setGaitGeneratorParam(param)
+
+    def setSTParameters(self, param):
+        self.abst_svc.setStabilizerParam(param)
+
     def defJointGroups(self):
         rleg_group = ['rleg', ['RLEG_JOINT0', 'RLEG_JOINT1', 'RLEG_JOINT2', 'RLEG_JOINT3', 'RLEG_JOINT4', 'RLEG_JOINT5']]
         lleg_group = ['lleg', ['LLEG_JOINT0', 'LLEG_JOINT1', 'LLEG_JOINT2', 'LLEG_JOINT3', 'LLEG_JOINT4', 'LLEG_JOINT5']]
@@ -47,7 +99,7 @@ class CHIDORIHrpsysConfigurator(URATAHrpsysConfigurator):
         gg.swing_trajectory_delay_time_offset=0.2
         gg.stair_trajectory_way_point_offset=[0.03, 0.0, 0.0]
         gg.swing_trajectory_final_distance_weight=3.0
-        gg.default_orbit_type = OpenHRP.AutoBalancerService.CYCLOIDDELAY
+        gg.default_orbit_type = OpenHRP.AutoBalanceStabilizerService.CYCLOIDDELAY
         gg.toe_pos_offset_x = 1e-3*117.338;
         gg.heel_pos_offset_x = 1e-3*-116.342;
         gg.toe_zmp_offset_x = 1e-3*117.338;
@@ -56,7 +108,7 @@ class CHIDORIHrpsysConfigurator(URATAHrpsysConfigurator):
 
     def setDefaultSTParameters(self):
         stp = self.getSTParameters()
-        stp.st_algorithm=OpenHRP.StabilizerService.EEFMQPCOP
+        stp.st_algorithm=OpenHRP.AutoBalanceStabilizerService.EEFMQPCOP
         stp.k_brot_p=[0, 0]
         stp.k_brot_tc=[1000, 1000]
         stp.eefm_body_attitude_control_gain=[0.5, 0.5]
@@ -97,21 +149,26 @@ class CHIDORIHrpsysConfigurator(URATAHrpsysConfigurator):
         stp.eefm_leg_outside_margin=tmp_leg_outside_margin
         stp.eefm_leg_front_margin=tmp_leg_front_margin
         stp.eefm_leg_rear_margin=tmp_leg_rear_margin
-        rleg_vertices = [OpenHRP.StabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, tmp_leg_inside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, -1*tmp_leg_outside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, -1*tmp_leg_outside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, tmp_leg_inside_margin])]
-        lleg_vertices = [OpenHRP.StabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, tmp_leg_outside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, -1*tmp_leg_inside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, -1*tmp_leg_inside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, tmp_leg_outside_margin])]
-        stp.eefm_support_polygon_vertices_sequence = map (lambda x : OpenHRP.StabilizerService.SupportPolygonVertices(vertices=x), [rleg_vertices, lleg_vertices])
+        rleg_vertices = [OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, tmp_leg_inside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, -1*tmp_leg_outside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, -1*tmp_leg_outside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, tmp_leg_inside_margin])]
+        lleg_vertices = [OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, tmp_leg_outside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[tmp_leg_front_margin, -1*tmp_leg_inside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, -1*tmp_leg_inside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*tmp_leg_rear_margin, tmp_leg_outside_margin])]
+        stp.eefm_support_polygon_vertices_sequence = map (lambda x : OpenHRP.AutoBalanceStabilizerService.SupportPolygonVertices(vertices=x), [rleg_vertices, lleg_vertices])
         stp.eefm_cogvel_cutoff_freq = 4.0
         # calculated by calculate-eefm-st-state-feedback-default-gain-from-robot *chidori*
         stp.eefm_k1=[-1.38444,-1.38444]
         stp.eefm_k2=[-0.368975,-0.368975]
         stp.eefm_k3=[-0.169915,-0.169915]
         self.setSTParameters(stp)
+
+    def setDefaultABSTParameters(self):
+        self.setDefaultABCParameters()
+        self.setDefaultGaitGeneraterParameters()
+        self.setDefaultSTParameters()
 
 if __name__ == '__main__':
     hcf = CHIDORIHrpsysConfigurator()

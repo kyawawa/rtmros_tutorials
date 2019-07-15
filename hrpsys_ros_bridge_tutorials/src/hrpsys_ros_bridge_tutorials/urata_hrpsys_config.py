@@ -85,6 +85,8 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
             self.setDefaultGaitGeneraterParameters()
         if self.st:
             self.setDefaultSTParameters()
+        if self.abst:
+            self.setDefaultABSTParameters()
         if self.el:
             self.setDefaultServoErrorLimit()
 
@@ -108,6 +110,9 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
 
     def setDefaultSTParameters(self):
         print("setDefaultSTParameters is not implemented")
+
+    def setDefaultABSTParameters(self):
+        print("setDefaultABSTParameters is not implemented")
 
     def setDefaultServoErrorLimit(self):
         pass
