@@ -80,10 +80,10 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
             self.setDefaultESParameters()
         if self.ic:
             self.setDefaultICParameters()
-        if self.abc:
+        if self.abc or self.abst:
             self.setDefaultABCParameters()
             self.setDefaultGaitGeneraterParameters()
-        if self.st:
+        if self.st or self.abst:
             self.setDefaultSTParameters()
         if self.el:
             self.setDefaultServoErrorLimit()
