@@ -11,6 +11,31 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
     def __init__(self):
         URATAHrpsysConfigurator.__init__(self, "JAXON_BLUE")
 
+    def getRTCList (self):
+        return [
+            ['seq', "SequencePlayer"],
+            ['sh', "StateHolder"],
+            ['fk', "ForwardKinematics"],
+            # ['tf', "TorqueFilter"],
+            ['kf', "KalmanFilter"],
+            # ['vs', "VirtualForceSensor"],
+            ['rmfo', "RemoveForceSensorLinkOffset"],
+            ['es', "EmergencyStopper"],
+            ['rfu', "ReferenceForceUpdater"],
+            ['octd', "ObjectContactTurnaroundDetector"],
+            ['ic', "ImpedanceController"],
+            # ['abc', "AutoBalancer"],
+            # ['st', "Stabilizer"],
+            ['abst', "AutoBalanceStabilizer"],
+            # ['tc', "TorqueController"],
+            # ['te', "ThermoEstimator"],
+            # ['tl', "ThermoLimiter"],
+            ['co', "CollisionDetector"],
+            ['hes', "EmergencyStopper"],
+            ['el', "SoftErrorLimiter"],
+            ['log', "DataLogger"]
+            ]
+
     def resetPose(self):
         ## Different from (send *robot* :reset-pose)
         return [0,0,-0.244732,0.676564,-0.431836,0, 0,0,-0.244735,0.676565,-0.431834,0, 0,0,0, 0,0, 0.698132,-0.349066,-0.087266,-1.39626,0,0,-0.349066, 0.698132,0.349066,0.087266,-1.39626,0,0,-0.349066]
@@ -28,6 +53,41 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
     def collisionFreeResetPose (self):
         return [0.0,0.0,-0.349066,0.698132,-0.349066,0.0, 0.0,0.0,-0.349066,0.698132,-0.349066,0.0, 0.0,0.0,0.0, 0.0,0.0, 0.0,-0.523599,0.0,0.0,0.0,0.0,0.0, 0.0,0.523599,0.0,0.0,0.0,0.0,0.0]
 
+    def startAutoBalancer(self, limbs=None):
+        if limbs==None:
+            if self.Groups != None and "rarm" in map (lambda x : x[0], self.Groups) and "larm" in map (lambda x : x[0], self.Groups):
+                limbs=["rleg", "lleg", "rarm", "larm"]
+            else:
+                limbs=["rleg", "lleg"]
+        self.abst_svc.startAutoBalancer(limbs)
+
+    def stopAutoBalancer(self):
+        self.abst_svc.stopAutoBalancer()
+
+    def startStabilizer(self):
+        self.abst_svc.startStabilizer()
+
+    def stopStabilizer(self):
+        self.abst_svc.stopStabilizer()
+
+    # Override parameter setter / getter for AutoBalancer and Stabilizer
+    def getABCParameters(self):
+        return self.abst_svc.getAutoBalancerParam()[1]
+
+    def getGaitGeneraterParameters(self):
+        return self.abst_svc.getGaitGeneratorParam()[1]
+
+    def getSTParameters(self):
+        return self.abst_svc.getStabilizerParam()
+
+    def setABCParameters(self, param):
+        return self.abst_svc.setAutoBalancerParam(param)
+
+    def setGaitGeneraterParameters(self, param):
+        return self.abst_svc.setGaitGeneratorParam(param)
+
+    def setSTParameters(self, param):
+        self.abst_svc.setStabilizerParam(param)
 
     def defJointGroups(self):
         rarm_group = ['rarm', ['RARM_JOINT0', 'RARM_JOINT1', 'RARM_JOINT2', 'RARM_JOINT3', 'RARM_JOINT4', 'RARM_JOINT5', 'RARM_JOINT6']]
@@ -58,38 +118,40 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
             self.setICParameters(l, icp)
 
     def setDefaultABCParameters(self):
-        abcp = self.getABCParameters()
-        abcp.default_zmp_offsets=[[0.05, 0.0, 0.0], [0.05, 0.0, 0.0], [0, 0, 0], [0, 0, 0]];
-        abcp.move_base_gain=0.8
-        self.setABCParameters(abcp)
+        # abcp = self.getABCParameters()
+        # abcp.default_zmp_offsets=[[0.05, 0.0, 0.0], [0.05, 0.0, 0.0], [0, 0, 0], [0, 0, 0]];
+        # abcp.move_base_gain=0.8
+        # self.setABCParameters(abcp)
+        pass
 
     def setDefaultGaitGeneraterParameters(self):
-        gg = self.getGaitGeneraterParameters()
-        gg.default_step_time=1.2
-        gg.default_step_height=0.065
-        #gg.default_double_support_ratio=0.32
-        gg.default_double_support_ratio=0.35
-        #gg.stride_parameter=[0.1,0.05,10.0]
-        #gg.default_step_time=1.0
-        #gg.swing_trajectory_delay_time_offset=0.35
-        #gg.swing_trajectory_delay_time_offset=0.2
-        gg.swing_trajectory_delay_time_offset=0.15
-        gg.stair_trajectory_way_point_offset=[0.03, 0.0, 0.0]
-        gg.swing_trajectory_final_distance_weight=3.0
-        gg.default_orbit_type = OpenHRP.AutoBalancerService.CYCLOIDDELAY
-        gg.toe_pos_offset_x = 1e-3*117.338;
-        gg.heel_pos_offset_x = 1e-3*-116.342;
-        gg.toe_zmp_offset_x = 1e-3*117.338;
-        gg.heel_zmp_offset_x = 1e-3*-116.342;
-        gg.optional_go_pos_finalize_footstep_num=1
-        self.setGaitGeneraterParameters(gg)
+        # gg = self.getGaitGeneraterParameters()
+        # gg.default_step_time=1.2
+        # gg.default_step_height=0.065
+        # #gg.default_double_support_ratio=0.32
+        # gg.default_double_support_ratio=0.35
+        # #gg.stride_parameter=[0.1,0.05,10.0]
+        # #gg.default_step_time=1.0
+        # #gg.swing_trajectory_delay_time_offset=0.35
+        # #gg.swing_trajectory_delay_time_offset=0.2
+        # gg.swing_trajectory_delay_time_offset=0.15
+        # gg.stair_trajectory_way_point_offset=[0.03, 0.0, 0.0]
+        # gg.swing_trajectory_final_distance_weight=3.0
+        # gg.default_orbit_type = OpenHRP.AutoBalancerService.CYCLOIDDELAY
+        # gg.toe_pos_offset_x = 1e-3*117.338;
+        # gg.heel_pos_offset_x = 1e-3*-116.342;
+        # gg.toe_zmp_offset_x = 1e-3*117.338;
+        # gg.heel_zmp_offset_x = 1e-3*-116.342;
+        # gg.optional_go_pos_finalize_footstep_num=1
+        # self.setGaitGeneraterParameters(gg)
+        pass
 
     def setDefaultSTParameters(self):
         stp = self.getSTParameters()
-        #stp.st_algorithm=OpenHRP.StabilizerService.EEFM
-        #stp.st_algorithm=OpenHRP.StabilizerService.EEFMQP
-        stp.st_algorithm=OpenHRP.StabilizerService.EEFMQPCOP
-        stp.emergency_check_mode=OpenHRP.StabilizerService.CP
+        #stp.st_algorithm=OpenHRP.AutoBalanceStabilizerService.EEFM
+        #stp.st_algorithm=OpenHRP.AutoBalanceStabilizerService.EEFMQP
+        stp.st_algorithm=OpenHRP.AutoBalanceStabilizerService.EEFMQPCOP
+        stp.emergency_check_mode=OpenHRP.AutoBalanceStabilizerService.CP
         stp.cp_check_margin=[0.05, 0.045, 0, 0.095]
         stp.k_brot_p=[0, 0]
         stp.k_brot_tc=[1000, 1000]
@@ -126,23 +188,28 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
         stp.eefm_leg_outside_margin=0.05
         stp.eefm_leg_front_margin=0.16
         stp.eefm_leg_rear_margin=0.06
-        rleg_vertices = [OpenHRP.StabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, stp.eefm_leg_inside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, -1*stp.eefm_leg_outside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, -1*stp.eefm_leg_outside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, stp.eefm_leg_inside_margin])]
-        lleg_vertices = [OpenHRP.StabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, stp.eefm_leg_outside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, -1*stp.eefm_leg_inside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, -1*stp.eefm_leg_inside_margin]),
-                         OpenHRP.StabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, stp.eefm_leg_outside_margin])]
+        rleg_vertices = [OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, stp.eefm_leg_inside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, -1*stp.eefm_leg_outside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, -1*stp.eefm_leg_outside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, stp.eefm_leg_inside_margin])]
+        lleg_vertices = [OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, stp.eefm_leg_outside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[stp.eefm_leg_front_margin, -1*stp.eefm_leg_inside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, -1*stp.eefm_leg_inside_margin]),
+                         OpenHRP.AutoBalanceStabilizerService.TwoDimensionVertex(pos=[-1*stp.eefm_leg_rear_margin, stp.eefm_leg_outside_margin])]
         rarm_vertices = rleg_vertices
         larm_vertices = lleg_vertices
-        stp.eefm_support_polygon_vertices_sequence = map (lambda x : OpenHRP.StabilizerService.SupportPolygonVertices(vertices=x), [rleg_vertices, lleg_vertices, rarm_vertices, larm_vertices])
+        stp.eefm_support_polygon_vertices_sequence = map (lambda x : OpenHRP.AutoBalanceStabilizerService.SupportPolygonVertices(vertices=x), [rleg_vertices, lleg_vertices, rarm_vertices, larm_vertices])
         stp.eefm_cogvel_cutoff_freq = 4.0
         # for only leg
         stp.eefm_k1=[-1.36334,-1.36334]
         stp.eefm_k2=[-0.343983,-0.343983]
         stp.eefm_k3=[-0.161465,-0.161465]
         self.setSTParameters(stp)
+
+    def setDefaultABSTParameters(self):
+        self.setDefaultABCParameters()
+        self.setDefaultGaitGeneraterParameters()
+        self.setDefaultSTParameters()
 
 if __name__ == '__main__':
     hcf = JAXON_BLUEHrpsysConfigurator()

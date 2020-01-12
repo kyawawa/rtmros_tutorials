@@ -11,6 +11,31 @@ class CHIDORIHrpsysConfigurator(URATAHrpsysConfigurator):
     def __init__(self):
         URATAHrpsysConfigurator.__init__(self, "CHIDORI")
 
+    def getRTCList (self):
+        return [
+            ['seq', "SequencePlayer"],
+            ['sh', "StateHolder"],
+            ['fk', "ForwardKinematics"],
+            # ['tf', "TorqueFilter"],
+            ['kf', "KalmanFilter"],
+            # ['vs', "VirtualForceSensor"],
+            ['rmfo', "RemoveForceSensorLinkOffset"],
+            ['es', "EmergencyStopper"],
+            ['rfu', "ReferenceForceUpdater"],
+            ['octd', "ObjectContactTurnaroundDetector"],
+            ['ic', "ImpedanceController"],
+            # ['abc', "AutoBalancer"],
+            # ['st', "Stabilizer"],
+            ['abst', "AutoBalanceStabilizer"],
+            # ['tc', "TorqueController"],
+            # ['te', "ThermoEstimator"],
+            # ['tl', "ThermoLimiter"],
+            ['co', "CollisionDetector"],
+            ['hes', "EmergencyStopper"],
+            ['el', "SoftErrorLimiter"],
+            ['log', "DataLogger"]
+            ]
+
     def resetPose(self):
         return [0.0, 0.0, -0.349066, 0.698132, -0.349066, 0.0, # rleg
                 0.0, 0.0, -0.349066, 0.698132, -0.349066, 0.0] # lleg
@@ -83,28 +108,30 @@ class CHIDORIHrpsysConfigurator(URATAHrpsysConfigurator):
         self.setKFParameters(kfp)
 
     def setDefaultABCParameters(self):
-        abcp = self.getABCParameters()
-        #abcp.default_zmp_offsets=[[0.015, 0.0, 0.0], [0.015, 0.0, 0.0]]
-        abcp.default_zmp_offsets=[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
-        abcp.move_base_gain=0.8
-        self.setABCParameters(abcp)
+        pass
+        # abcp = self.getABCParameters()
+        # #abcp.default_zmp_offsets=[[0.015, 0.0, 0.0], [0.015, 0.0, 0.0]]
+        # abcp.default_zmp_offsets=[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
+        # abcp.move_base_gain=0.8
+        # self.setABCParameters(abcp)
 
     def setDefaultGaitGeneraterParameters(self):
-        gg = self.getGaitGeneraterParameters()
-        gg.default_step_time=1.2
-        # gg.default_double_support_ratio=0.32
-        gg.default_double_support_ratio=0.35
-        # gg.stride_parameter=[0.1,0.05,10.0]
-        # gg.default_step_time=1.0
-        gg.swing_trajectory_delay_time_offset=0.2
-        gg.stair_trajectory_way_point_offset=[0.03, 0.0, 0.0]
-        gg.swing_trajectory_final_distance_weight=3.0
-        gg.default_orbit_type = OpenHRP.AutoBalanceStabilizerService.CYCLOIDDELAY
-        gg.toe_pos_offset_x = 1e-3*117.338;
-        gg.heel_pos_offset_x = 1e-3*-116.342;
-        gg.toe_zmp_offset_x = 1e-3*117.338;
-        gg.heel_zmp_offset_x = 1e-3*-116.342;
-        self.setGaitGeneraterParameters(gg)
+        # gg = self.getGaitGeneraterParameters()
+        # gg.default_step_time=1.2
+        # # gg.default_double_support_ratio=0.32
+        # gg.default_double_support_ratio=0.35
+        # # gg.stride_parameter=[0.1,0.05,10.0]
+        # # gg.default_step_time=1.0
+        # gg.swing_trajectory_delay_time_offset=0.2
+        # gg.stair_trajectory_way_point_offset=[0.03, 0.0, 0.0]
+        # gg.swing_trajectory_final_distance_weight=3.0
+        # gg.default_orbit_type = OpenHRP.AutoBalanceStabilizerService.CYCLOIDDELAY
+        # gg.toe_pos_offset_x = 1e-3*117.338;
+        # gg.heel_pos_offset_x = 1e-3*-116.342;
+        # gg.toe_zmp_offset_x = 1e-3*117.338;
+        # gg.heel_zmp_offset_x = 1e-3*-116.342;
+        # self.setGaitGeneraterParameters(gg)
+        pass
 
     def setDefaultSTParameters(self):
         stp = self.getSTParameters()
@@ -175,6 +202,6 @@ if __name__ == '__main__':
     if len(sys.argv) > 2 :
         hcf.init(sys.argv[1], sys.argv[2])
     elif len(sys.argv) > 1 :
-        hcf.init(sys.argv[1], sys.argv[2])
+        hcf.init(sys.argv[1])
     else :
         hcf.init()
