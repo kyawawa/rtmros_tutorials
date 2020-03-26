@@ -70,6 +70,9 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
     def setServoErrorLimit(self, joint_name, limit):
         self.el_svc.setServoErrorLimit(joint_name, limit)
 
+    def setJointControlMode(self, joint_name, mode):
+        self.rh_svc.setJointControlMode(joint_name, mode)
+
     # Functions to set default hrpsys parameters for each robot
     def setDefaultHrpsysParameters(self):
         if self.kf:
@@ -89,6 +92,8 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
             self.setDefaultABSTParameters()
         if self.el:
             self.setDefaultServoErrorLimit()
+        if self.rh:
+            self.setDefaultRHSettings()
 
     def setDefaultKFParameters(self):
         print("setDefaultKFParameters is not implemented")
@@ -115,6 +120,9 @@ class URATAHrpsysConfigurator(HrpsysConfigurator):
         print("setDefaultABSTParameters is not implemented")
 
     def setDefaultServoErrorLimit(self):
+        pass
+
+    def setDefaultRHSettings(self):
         pass
 
     # Basic set of poses
