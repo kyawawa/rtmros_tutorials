@@ -45,7 +45,7 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
         return [0,0,-0.237906,0.673927,-0.436025,-0.000427, 0,0,-0.237909,0.673928,-0.436023,-0.000428, 0,0,0, 0,0.523599, 0.959931,-0.349066,-0.261799,-1.74533,-0.436332,0,-0.785398, 0.959931,0.349066,0.261799,-1.74533,0.436332,0,-0.785398]
 
     def resetLandingPose (self):
-        return self.resetPose()
+        return [0.0,0.0,-0.73796,1.45379,-0.715828,0.0, 0.0,0.0,-0.73796,1.45379,-0.715828,0.0, 0.0,0.0,0.0, 0.0,0.0, 0.698132,-0.349066,-0.087266,-1.39626,0.0,0.0,0.0, 0.698132,0.349066,0.087266,-1.39626,0.0,0.0,0.0]
 
     def collisionFreeInitPose (self):
         return [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0, 0.0,0.0, 0.0,-0.261799,0.0,0.0,0.0,0.0,0.0, 0.0,0.261799,0.0,0.0,0.0,0.0,0.0]
@@ -101,6 +101,7 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
     def setDefaultKFParameters(self):
         kfp = self.getKFParameters()
         kfp.R_angle=1000
+        kfp.sensorRPY_offset=[math.radians(0.7), 0, 0]
         self.setKFParameters(kfp)
 
     def setDefaultESParameters(self):
@@ -119,7 +120,7 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
 
     def setDefaultABCParameters(self):
         # abcp = self.getABCParameters()
-        # abcp.default_zmp_offsets=[[0.05, 0.0, 0.0], [0.05, 0.0, 0.0], [0, 0, 0], [0, 0, 0]];
+        # abcp.default_zmp_offsets=[[0.05, 0.02, 0.0], [0.05, -0.02, 0.0], [0, 0, 0], [0, 0, 0]]
         # abcp.move_base_gain=0.8
         # self.setABCParameters(abcp)
         pass
@@ -204,12 +205,24 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
         stp.eefm_k1=[-1.36334,-1.36334]
         stp.eefm_k2=[-0.343983,-0.343983]
         stp.eefm_k3=[-0.161465,-0.161465]
+
+        stp.swing2landing_transition_time = 0.05
+        stp.landing_phase_time = 0.1
+        stp.landing2support_transition_time = 0.5
+        leg_gains = {"support_pgain":[5,30,10,5,0.5,0.1], "support_dgain":[70,70,50,10,1,3], "landing_pgain":[5,30,10,1,0.5,0.1], "landing_dgain":[70,70,50,10,1,3]}
+        arm_gains = {"support_pgain":[100,100,100,100,100,100,100], "support_dgain":[100,100,100,100,100,100,100], "landing_pgain":[100,100,100,100,100,100,100], "landing_dgain":[100,100,100,100,100,100,100]}
+        stp.joint_control_mode = OpenHRP.RobotHardwareService.TORQUE
+        stp.joint_servo_control_parameters = map (lambda x : OpenHRP.AutoBalanceStabilizerService.JointServoControlParameter(**x), [leg_gains, leg_gains, arm_gains, arm_gains])
+
         self.setSTParameters(stp)
 
     def setDefaultABSTParameters(self):
         self.setDefaultABCParameters()
         self.setDefaultGaitGeneraterParameters()
         self.setDefaultSTParameters()
+
+    def setDefaultRHSettings(self):
+        self.setJointControlMode("all", OpenHRP.RobotHardwareService.TORQUE)
 
 if __name__ == '__main__':
     hcf = JAXON_BLUEHrpsysConfigurator()
