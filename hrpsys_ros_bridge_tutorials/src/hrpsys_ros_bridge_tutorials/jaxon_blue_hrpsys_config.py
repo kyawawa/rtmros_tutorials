@@ -209,10 +209,11 @@ class JAXON_BLUEHrpsysConfigurator(URATAHrpsysConfigurator):
         stp.swing2landing_transition_time = 0.05
         stp.landing_phase_time = 0.1
         stp.landing2support_transition_time = 0.5
-        leg_gains = {"support_pgain":[5,30,10,5,0.5,0.1], "support_dgain":[70,70,50,10,1,3], "landing_pgain":[5,30,10,1,0.5,0.1], "landing_dgain":[70,70,50,10,1,3]}
-        arm_gains = {"support_pgain":[100,100,100,100,100,100,100], "support_dgain":[100,100,100,100,100,100,100], "landing_pgain":[100,100,100,100,100,100,100], "landing_dgain":[100,100,100,100,100,100,100]}
-        stp.joint_control_mode = OpenHRP.RobotHardwareService.TORQUE
-        stp.joint_servo_control_parameters = map (lambda x : OpenHRP.AutoBalanceStabilizerService.JointServoControlParameter(**x), [leg_gains, leg_gains, arm_gains, arm_gains])
+
+        stp.joint_control_mode = OpenHRP.AutoBalanceStabilizerService.JOINT_TORQUE
+        # leg_gains = {"support_pgain":[5,30,10,5,0.5,0.1], "support_dgain":[70,70,50,10,1,3], "landing_pgain":[5,30,10,1,0.5,0.1], "landing_dgain":[70,70,50,10,1,3]}
+        # arm_gains = {"support_pgain":[100,100,100,100,100,100,100], "support_dgain":[100,100,100,100,100,100,100], "landing_pgain":[100,100,100,100,100,100,100], "landing_dgain":[100,100,100,100,100,100,100]}
+        # stp.joint_servo_control_parameters = map(lambda x : OpenHRP.AutoBalanceStabilizerService.JointServoControlParameter(**x), [leg_gains, leg_gains, arm_gains, arm_gains])
 
         self.setSTParameters(stp)
 
